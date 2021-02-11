@@ -1,21 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { MainLayout } from './src/navigation/MainLayout';
+import { ServiceState } from './src/context/currency-service/ServiceState';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const App = () => {
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  return(
+    <ServiceState>
+      <MainLayout></MainLayout>
+    </ServiceState>
+     );
+};
+
+export default App;
