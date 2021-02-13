@@ -1,10 +1,9 @@
 import React from 'react'
 import { StyleSheet} from 'react-native'
-import { Container, Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
+import { Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
 
 export const HeaderComponent = ({isBackPage, titel}) => {
     return (
-        <Container>
         <Header>
           <Left>
            {isBackPage &&
@@ -21,7 +20,6 @@ export const HeaderComponent = ({isBackPage, titel}) => {
             </Button>
           </Right>
         </Header>
-      </Container>
     )
 }
 

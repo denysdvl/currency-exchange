@@ -8,9 +8,7 @@ export default class HomeScreen extends Component {
     return (
       <Container>
         <HeaderComponent isBackPage={false} titel={"Home"}></HeaderComponent>
-        <Content style={{ flex: 1 }}>
           <HomeComponent></HomeComponent>
-        </Content>
       </Container>
     );
   }
