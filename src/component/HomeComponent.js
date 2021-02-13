@@ -2,11 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import moment from "moment";
 import { ServiceContext } from "../context/currency-service/serviceContext";
-import { Text, Button, List, ListItem, Content, Icon } from "native-base";
+import { CurrencyContext } from "../context/currency/currencyContext";
+import { Text, Button, Content, Icon } from "native-base";
 import { CustomDatePicker } from "./shared/CustomDataPicker";
+import { CurrencyList } from "./shared/CurrencyList";
 
 export const HomeComponent = () => {
   const { currencyService } = useContext(ServiceContext);
+  const { currencyRates, setCurrencyRates } = useContext(CurrencyContext);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(true);
@@ -14,16 +17,25 @@ export const HomeComponent = () => {
   useEffect(() => {
     (async () => {
       try {
-        // const allCurrency = await currencyService.getCurrencylatest();
+        const allCurrency = await currencyService.getCurrencylatest();
+        setCurrencyRates(allCurrency.rates)
         setLoading(false);
       } catch (err) {}
     })();
   }, []);
 
-  const changeDate = (Newdate) => {
+  const changeDate = async (Newdate) => {
     setShowDatePicker(false);
     setDate(Newdate);
+    const transformNewDay = moment(Newdate).format("YYYY-MM-DD")
+    const allCurrencyDay = await currencyService.getCurrencyDay(transformNewDay);
+    setCurrencyRates(allCurrencyDay.rates)
   };
+
+  if(loading){
+    return <Text>Loading...</Text>
+  }
+  
   return (
     <View style={styles.wrapp}>
 
@@ -31,23 +43,7 @@ export const HomeComponent = () => {
         <Text style={{paddingRight: 0}}>{moment(date).format("LL")}</Text><Icon name={showDatePicker ? 'caret-up' : 'caret-down'}/>
       </Button>
       <Content style={{ flex: 1 }}>
-        <List>
-          <ListItem>
-            <Text>Simon Mignolet</Text>
-          </ListItem>
-          <ListItem>
-            <Text>Nathaniel Clyne</Text>
-          </ListItem>
-          <ListItem>
-            <Text>Dejan Lovren</Text>
-          </ListItem>
-          <ListItem>
-            <Text>Simon Mignolet</Text>
-          </ListItem>
-          <ListItem>
-            <Text>Nathaniel Clyne</Text>
-          </ListItem>
-        </List>
+        <CurrencyList currencyList={currencyRates}></CurrencyList>
       </Content>
       {showDatePicker && (
         <CustomDatePicker
