@@ -23,7 +23,7 @@ export const CustomDatePicker  = ({onClose, onChangeDate, oldDate}) =>  {
           value={date}
           mode="date"
           maximumDate={new Date()}
-          minimumDate={new Date(2019, 1, 1)}
+          minimumDate={new Date(2018, 1, 1)}
           display="spinner"
           onChange={(e, d) => setDate(d)}
           style={{ backgroundColor: 'white' }}

@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import moment from "moment";
 import { ServiceContext } from "../context/currency-service/serviceContext";
 import { CurrencyContext } from "../context/currency/currencyContext";
-import { Text, Button, Content, Icon } from "native-base";
+import { Text, Button, Content, Icon, Toast} from "native-base";
 import { CustomDatePicker } from "./shared/CustomDataPicker";
 import { CurrencyList } from "./shared/CurrencyList";
 import { LoadingComponent } from "./shared/LoadingComponent";
@@ -27,6 +27,14 @@ export const HomeComponent = ({baseCurrency, dateRates}) => {
     Actions.homeScreen({ day, base });
   };
 
+  const showToast = (text) => {
+    Toast.show({
+    text,
+    position: 'bottom',
+    duration: 7000,
+    type: 'danger'});
+  };
+
   const updataCurrency = async () => {
     setLoading(true);
     try {
@@ -35,7 +43,8 @@ export const HomeComponent = ({baseCurrency, dateRates}) => {
       setRatesName(allCurrency.ratesNames);
       setCurrencyRates(allCurrency.rates);
     } catch (err) {
-      console.log(err);
+      showToast(err.message);
+      Actions.pop()
     } finally {
       setLoading(false);
     }
