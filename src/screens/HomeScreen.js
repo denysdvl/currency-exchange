@@ -5,10 +5,14 @@ import { Container, Content } from "native-base";
 
 export default class HomeScreen extends Component {
   render() {
+    const {base, day} = this.props;
+    const isBackPage = !!base && !!day;
+    const baseCurrency = base ? base : "EUR";
+    const dateRates = day ? day : new Date();
     return (
       <Container>
-        <HeaderComponent isBackPage={false} titel={"Home"}></HeaderComponent>
-          <HomeComponent></HomeComponent>
+        <HeaderComponent isBackPage={isBackPage} titel={"Home"}></HeaderComponent>
+          <HomeComponent baseCurrency={baseCurrency} dateRates={dateRates}></HomeComponent>
       </Container>
     );
   }

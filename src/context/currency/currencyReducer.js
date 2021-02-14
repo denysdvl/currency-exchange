@@ -20,14 +20,6 @@ const handlers = {
     ...state,
     ratesNames
   }),
-  [SET_BASE_CURRENCY]: (state, {baseCurrency}) => ({
-    ...state,
-    baseCurrency
-  }),
-  [SET_DATE_RATES]: (state, {dateRates}) => ({
-    ...state,
-    dateRates
-  }),
   [SET_INTERVAL_UPDATA]: (state, {intervalUpdata}) => ({
     ...state,
     intervalUpdata

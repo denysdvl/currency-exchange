@@ -1,13 +1,14 @@
 import React from 'react'
 import { StyleSheet} from 'react-native'
 import { Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
+import { Actions } from 'react-native-router-flux';
 
 export const HeaderComponent = ({isBackPage, titel}) => {
     return (
         <Header>
           <Left>
            {isBackPage &&
-            (<Button transparent>
+            (<Button transparent onPress={() => Actions.pop()}>
               <Icon name='arrow-back' />
             </Button>)}
           </Left>

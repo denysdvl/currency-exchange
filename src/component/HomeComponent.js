@@ -8,32 +8,32 @@ import { CustomDatePicker } from "./shared/CustomDataPicker";
 import { CurrencyList } from "./shared/CurrencyList";
 import { LoadingComponent } from "./shared/LoadingComponent";
 import { SelectBaseCurrency } from "./shared/SelectBaseCurrency";
+import { Actions } from 'react-native-router-flux';
 
-export const HomeComponent = () => {
+export const HomeComponent = ({baseCurrency, dateRates}) => {
   const { currencyService } = useContext(ServiceContext);
-  const { currencyRates, setCurrencyRates, setLoading, loading, ratesNames, setRatesName, baseCurrency, setBaseCurrency, dateRates, setDateRates } = useContext(CurrencyContext);
+  const { currencyRates, setCurrencyRates, setLoading, loading, ratesNames, setRatesName } = useContext(CurrencyContext);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     (() => {
-     updataCurrency(dateRates, baseCurrency)
+     updataCurrency();
     })();
   }, []);
   
-  const changeDate = async (NewDate) => {
+  const changeDate = async (day) => {
     setShowDatePicker(false);
-    setDateRates(NewDate);
-    updataCurrency(NewDate, baseCurrency);
+    const base = baseCurrency;
+    Actions.homeScreen({ day, base });
   };
 
-  const updataCurrency = async (date, base) => {
+  const updataCurrency = async () => {
     setLoading(true);
     try {
-      const transformDay = moment(date).format("YYYY-MM-DD");
-      const allCurrency = await currencyService.getCurrency(transformDay, base);
+      const transformDay = moment(dateRates).format("YYYY-MM-DD");
+      const allCurrency = await currencyService.getCurrency(transformDay, baseCurrency);
       setRatesName(allCurrency.ratesNames);
       setCurrencyRates(allCurrency.rates);
-      setBaseCurrency(allCurrency.base)
     } catch (err) {
       console.log(err);
     } finally {
@@ -42,8 +42,8 @@ export const HomeComponent = () => {
   }
 
   const updateBaseCurrency = (base) => {
-    setBaseCurrency(base);
-    updataCurrency(dateRates, base);
+    const day = dateRates;
+    Actions.homeScreen({ day, base });
   }
 
   if (loading) {
