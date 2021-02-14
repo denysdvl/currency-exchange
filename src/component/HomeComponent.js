@@ -57,7 +57,6 @@ export const HomeComponent = ({baseCurrency, dateRates}) => {
           <Text style={{ paddingRight: 0 }}>{moment(dateRates).format("LL")}</Text>
           <Icon name={showDatePicker ? "caret-up" : "caret-down"} />
         </Button>
-        <Text>Selected currency</Text>
         <SelectBaseCurrency selectList={ratesNames} selectCurrency={baseCurrency} setSelect={(item) => updateBaseCurrency(item)}></SelectBaseCurrency>
       </View>
       <Content style={{ flex: 1 }}>
@@ -88,6 +87,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderColor: 'grey'
+    borderColor: 'grey',
   }
 });
