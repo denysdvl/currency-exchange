@@ -6,48 +6,66 @@ import { CurrencyContext } from "../context/currency/currencyContext";
 import { Text, Button, Content, Icon } from "native-base";
 import { CustomDatePicker } from "./shared/CustomDataPicker";
 import { CurrencyList } from "./shared/CurrencyList";
+import { LoadingComponent } from "./shared/LoadingComponent";
+import { SelectBaseCurrency } from "./shared/SelectBaseCurrency";
 
 export const HomeComponent = () => {
   const { currencyService } = useContext(ServiceContext);
-  const { currencyRates, setCurrencyRates } = useContext(CurrencyContext);
-  const [loading, setLoading] = useState(true);
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(true);
+  const { currencyRates, setCurrencyRates, setLoading, loading, ratesNames, setRatesName, baseCurrency, setBaseCurrency, dateRates, setDateRates } = useContext(CurrencyContext);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const allCurrency = await currencyService.getCurrencylatest();
-        setCurrencyRates(allCurrency.rates)
-        setLoading(false);
-      } catch (err) {}
+    (() => {
+     updataCurrency(dateRates, baseCurrency)
     })();
   }, []);
-
-  const changeDate = async (Newdate) => {
+  
+  const changeDate = async (NewDate) => {
     setShowDatePicker(false);
-    setDate(Newdate);
-    const transformNewDay = moment(Newdate).format("YYYY-MM-DD")
-    const allCurrencyDay = await currencyService.getCurrencyDay(transformNewDay);
-    setCurrencyRates(allCurrencyDay.rates)
+    setDateRates(NewDate);
+    updataCurrency(NewDate, baseCurrency);
   };
 
-  if(loading){
-    return <Text>Loading...</Text>
+  const updataCurrency = async (date, base) => {
+    setLoading(true);
+    try {
+      const transformDay = moment(date).format("YYYY-MM-DD");
+      const allCurrency = await currencyService.getCurrency(transformDay, base);
+      setRatesName(allCurrency.ratesNames);
+      setCurrencyRates(allCurrency.rates);
+      setBaseCurrency(allCurrency.base)
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   }
-  
+
+  const updateBaseCurrency = (base) => {
+    setBaseCurrency(base);
+    updataCurrency(dateRates, base);
+  }
+
+  if (loading) {
+    return (<LoadingComponent ></LoadingComponent>)
+  }
+
   return (
     <View style={styles.wrapp}>
-
-      <Button light onPress={() => setShowDatePicker(!showDatePicker)}>
-        <Text style={{paddingRight: 0}}>{moment(date).format("LL")}</Text><Icon name={showDatePicker ? 'caret-up' : 'caret-down'}/>
-      </Button>
+      <View style={styles.wrappSelect}>
+        <Button onPress={() => setShowDatePicker(!showDatePicker)}>
+          <Text style={{ paddingRight: 0 }}>{moment(dateRates).format("LL")}</Text>
+          <Icon name={showDatePicker ? "caret-up" : "caret-down"} />
+        </Button>
+        <Text>Selected currency</Text>
+        <SelectBaseCurrency selectList={ratesNames} selectCurrency={baseCurrency} setSelect={(item) => updateBaseCurrency(item)}></SelectBaseCurrency>
+      </View>
       <Content style={{ flex: 1 }}>
         <CurrencyList currencyList={currencyRates}></CurrencyList>
       </Content>
       {showDatePicker && (
         <CustomDatePicker
-          oldDate={date}
+          oldDate={dateRates}
           onClose={() => setShowDatePicker(false)}
           onChangeDate={(Newdate) => changeDate(Newdate)}
         />
@@ -64,4 +82,12 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "flex-start",
   },
+  wrappSelect: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderColor: 'grey'
+  }
 });

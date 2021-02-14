@@ -5,9 +5,9 @@ import { Text, List, ListItem} from "native-base";
 export const CurrencyList = ({ currencyList }) => {
   return (
     <List>
-      {currencyList.map((item) => {
+      {currencyList.map((item, id) => {
         return (
-          <ListItem style={styles.listItem}>
+          <ListItem key={id} style={styles.listItem}>
             <Text>{item[0]}</Text>
             <Text>{item[1]}</Text>
           </ListItem>

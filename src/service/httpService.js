@@ -1,12 +1,13 @@
 export function makeHttpService() {
   const __apiBase = "http://data.fixer.io/api/";
-  const __apiKey = "6e107aff6396ef9544f14c81eb3c048d";
+  const __apiKey = "00119be97e0550729512c3db243092f1";
   return {
     get,
   };
 
   async function get(requestUrl, params = {}, headers = {}) {
     const searchParams = new URLSearchParams({'?access_key': __apiKey, ...params}).toString();
+    console.log(`${__apiBase}${requestUrl}${searchParams}`)
     try {
       const res = await fetch(`${__apiBase}${requestUrl}${searchParams}`, {
         method: "GET",
