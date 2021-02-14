@@ -3,11 +3,11 @@ import { StyleSheet} from 'react-native'
 import { Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
 import { Actions } from 'react-native-router-flux';
 
-export const HeaderComponent = ({isBackPage, titel}) => {
+export const HeaderComponent = ({isGoToBackPage, isGoToSettings, titel}) => {
     return (
         <Header>
           <Left>
-           {isBackPage &&
+           {isGoToBackPage &&
             (<Button transparent onPress={() => Actions.pop()}>
               <Icon name='arrow-back' />
             </Button>)}
@@ -16,9 +16,10 @@ export const HeaderComponent = ({isBackPage, titel}) => {
             <Title>{titel}</Title>
           </Body>
           <Right>
-            <Button transparent>
+          {isGoToSettings &&
+           (<Button transparent onPress={() => Actions.settingsScreen()}>
               <Icon name='settings' />
-            </Button>
+            </Button>)}
           </Right>
         </Header>
     )

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { HomeComponent } from "../component/HomeComponent";
 import { HeaderComponent } from "../component/HeaderComponent";
-import { Container, Content } from "native-base";
+import { Container } from "native-base";
 
 export default class HomeScreen extends Component {
   render() {
@@ -11,7 +11,7 @@ export default class HomeScreen extends Component {
     const dateRates = day ? day : new Date();
     return (
       <Container>
-        <HeaderComponent isBackPage={isBackPage} titel={"Home"}></HeaderComponent>
+        <HeaderComponent isGoToSettings={true} isGoToBackPage={isBackPage} titel={"Home"}></HeaderComponent>
           <HomeComponent baseCurrency={baseCurrency} dateRates={dateRates}></HomeComponent>
       </Container>
     );
