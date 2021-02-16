@@ -3,8 +3,7 @@ import {
   SET_LOADING,
   SET_RATES_NAMES,
   SET_BASE_CURRENCY,
-  SET_DATE_RATES,
-  SET_INTERVAL_UPDATA
+  SET_INTERVAL_UPDATE
  } from './types';
 
 const handlers = {
@@ -20,9 +19,13 @@ const handlers = {
     ...state,
     ratesNames
   }),
-  [SET_INTERVAL_UPDATA]: (state, {intervalUpdata}) => ({
+  [SET_BASE_CURRENCY]: (state, {baseCurrency}) => ({
     ...state,
-    intervalUpdata
+    baseCurrency
+  }),
+  [SET_INTERVAL_UPDATE]: (state, {intervalUpdate}) => ({
+    ...state,
+    intervalUpdate
   }),
   DEFAULT: state => state
 }

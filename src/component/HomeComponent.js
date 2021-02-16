@@ -9,22 +9,51 @@ import { CurrencyList } from "./shared/CurrencyList";
 import { LoadingComponent } from "./shared/LoadingComponent";
 import { SelectBaseCurrency } from "./shared/SelectBaseCurrency";
 import { Actions } from 'react-native-router-flux';
+import * as SecureStore from 'expo-secure-store';
+import useInterval from "./hoc/useInterval";
 
-export const HomeComponent = ({baseCurrency, dateRates}) => {
+export function HomeComponent({dateRates}) {
   const { currencyService } = useContext(ServiceContext);
-  const { currencyRates, setCurrencyRates, setLoading, loading, ratesNames, setRatesName } = useContext(CurrencyContext);
+  const { setIntervalUpdate, intervalUpdate, baseCurrency, setBaseCurrency } = useContext(CurrencyContext);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [ratesNames, setRatesName] = useState([]);
+  const [currencyRates, setCurrencyRates] = useState([]);
+
+
+  const getDate = (date) => {
+    return moment(date).format("YYYY-MM-DD")
+  }
+  
+  const isUpdate = () => {
+   return getDate(dateRates) === getDate(new Date()) && Actions.currentScene === 'homeScreen';
+  }
 
   useEffect(() => {
-    (() => {
-     updataCurrency();
+    (async  () => {
+      updateCurrency()
+      try {
+        let intervalStore = await SecureStore.getItemAsync('interval_secure');
+        if (!intervalStore) {
+          throw Error();
+        }
+        setIntervalUpdate(+intervalStore);
+      } catch (error) {}
     })();
   }, []);
   
-  const changeDate = async (day) => {
+  useInterval(() => {
+    updateCurrency()
+  }, isUpdate() ? intervalUpdate : null)
+
+  const changeDate = (day) => {
     setShowDatePicker(false);
-    const base = baseCurrency;
-    Actions.homeScreen({ day, base });
+    Actions.historyScreen({ day })
+  };
+
+  const changeBaseCurrency = async (base) => {
+    setBaseCurrency(base);
+    await updateCurrency();
   };
 
   const showToast = (text) => {
@@ -35,7 +64,7 @@ export const HomeComponent = ({baseCurrency, dateRates}) => {
     type: 'danger'});
   };
 
-  const updataCurrency = async () => {
+  const updateCurrency = async () => {
     setLoading(true);
     try {
       const transformDay = moment(dateRates).format("YYYY-MM-DD");
@@ -44,16 +73,11 @@ export const HomeComponent = ({baseCurrency, dateRates}) => {
       setCurrencyRates(allCurrency.rates);
     } catch (err) {
       showToast(err.message);
-      Actions.pop()
     } finally {
       setLoading(false);
     }
   }
 
-  const updateBaseCurrency = (base) => {
-    const day = dateRates;
-    Actions.homeScreen({ day, base });
-  }
 
   if (loading) {
     return (<LoadingComponent ></LoadingComponent>)
@@ -66,17 +90,16 @@ export const HomeComponent = ({baseCurrency, dateRates}) => {
           <Text style={{ paddingRight: 0 }}>{moment(dateRates).format("LL")}</Text>
           <Icon name={showDatePicker ? "caret-up" : "caret-down"} />
         </Button>
-        <SelectBaseCurrency selectList={ratesNames} selectCurrency={baseCurrency} setSelect={(item) => updateBaseCurrency(item)}></SelectBaseCurrency>
+        <SelectBaseCurrency selectList={ratesNames} selectCurrency={baseCurrency} setSelect={(item) => changeBaseCurrency(item)}></SelectBaseCurrency>
       </View>
       <Content style={{ flex: 1 }}>
-        <CurrencyList currencyList={currencyRates}></CurrencyList>
+      <CurrencyList currencyList={currencyRates}></CurrencyList>
       </Content>
       {showDatePicker && (
         <CustomDatePicker
           oldDate={dateRates}
           onClose={() => setShowDatePicker(false)}
-          onChangeDate={(Newdate) => changeDate(Newdate)}
-        />
+          onChangeDate={(Newdate) => changeDate(Newdate)}/>
       )}
     </View>
   );
@@ -99,3 +122,4 @@ const styles = StyleSheet.create({
     borderColor: 'grey',
   }
 });
+

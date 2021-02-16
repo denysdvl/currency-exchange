@@ -5,7 +5,8 @@ import {
   SET_CURRENCY_RATES,
   SET_LOADING,
   SET_RATES_NAMES,
-  SET_INTERVAL_UPDATA
+  SET_BASE_CURRENCY,
+  SET_INTERVAL_UPDATE
 } from "./types";
 
 export const CurrencyState = ({ children }) => {
@@ -13,7 +14,8 @@ export const CurrencyState = ({ children }) => {
     currencyRates: [],
     loading: true,
     ratesNames: [],
-    intervalUpdata: 10000,
+    baseCurrency: "EUR",
+    intervalUpdate: 10000,
   };
   const [state, dispatch] = useReducer(currencyReducer, initialState);
 
@@ -29,8 +31,12 @@ export const CurrencyState = ({ children }) => {
     dispatch({ type: SET_RATES_NAMES, ratesNames });
   };
 
-  const setIntervalUpdata = (intervalUpdata) => {
-    dispatch({ type: SET_INTERVAL_UPDATA, intervalUpdata });
+  const setBaseCurrency = (baseCurrency) => {
+    dispatch({ type: SET_BASE_CURRENCY, baseCurrency });
+  };
+
+  const setIntervalUpdate = (intervalUpdate) => {
+    dispatch({ type: SET_INTERVAL_UPDATE, intervalUpdate });
   };
 
   return (
@@ -39,11 +45,13 @@ export const CurrencyState = ({ children }) => {
         currencyRates: state.currencyRates,
         loading: state.loading,
         ratesNames: state.ratesNames,
-        intervalUpdata: state.intervalUpdata,
+        baseCurrency: state.baseCurrency,
+        intervalUpdate: state.intervalUpdate,
         setCurrencyRates,
         setLoading,
         setRatesName,
-        setIntervalUpdata,
+        setBaseCurrency,
+        setIntervalUpdate,
       }}>
       {children}
     </CurrencyContext.Provider>

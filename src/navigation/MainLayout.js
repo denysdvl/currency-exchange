@@ -10,6 +10,7 @@ export const MainLayout = () => {
       <Router>
         <Scene hideNavBar={true} key="root">
           <Scene key="homeScreen" component={HomeScreen} initial={true} />
+          <Scene key="historyScreen" path={"/:day/ "} component={HomeScreen} />
           <Scene key="settingsScreen" component={SettingsScreen} />
         </Scene>
       </Router>
